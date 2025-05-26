@@ -1,0 +1,369 @@
+-- do what u gon do no crayole it get violent 🗣️
+
+-- discord link: https://discord.gg/VJmCyg7Z JOINNNN
+
+-- dont steal plsss
+
+local pg = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+if pg then
+    for _, n in ipairs({"UniversalESPGUI"}) do
+        local g = pg:FindFirstChild(n)
+        if g then pcall(function() g:Destroy() end) end
+    end
+end
+
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local TS = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "UniversalESPGUI"
+gui.Parent = lp.PlayerGui
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 600, 0, 520)
+frame.Position = UDim2.new(0.5, -300, 0.13, 0)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,24)
+frame.BackgroundTransparency = 1
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 18)
+local shadow = Instance.new("ImageLabel", frame)
+shadow.BackgroundTransparency = 1
+shadow.Size = UDim2.new(1.2,0,1.2,0)
+shadow.Position = UDim2.new(-0.1,0,-0.1,0)
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageTransparency = 0.8
+shadow.ZIndex = 0
+
+frame.Visible = false
+TS:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.1}):Play()
+frame.Visible = true
+
+local label = Instance.new("TextLabel", frame)
+label.Size = UDim2.new(1,0,0,36)
+label.Position = UDim2.new(0,0,0,0)
+label.BackgroundTransparency = 1
+label.Text = "ESP & Name Toggle"
+label.Font = Enum.Font.GothamBold
+label.TextSize = 24
+label.TextColor3 = Color3.fromRGB(0,255,255)
+
+local toggle = Instance.new("TextButton", frame)
+toggle.Size = UDim2.new(0.4,0,0,38)
+toggle.Position = UDim2.new(0.05,0,0,54)
+toggle.BackgroundColor3 = Color3.fromRGB(30,30,36)
+toggle.Text = "ESP: OFF"
+toggle.TextColor3 = Color3.fromRGB(255,255,255)
+toggle.TextSize = 18
+toggle.Font = Enum.Font.GothamBold
+Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 10)
+
+local rainbowBtn = Instance.new("TextButton", frame)
+rainbowBtn.Size = UDim2.new(0.4,0,0,38)
+rainbowBtn.Position = UDim2.new(0.55,0,0,54)
+rainbowBtn.BackgroundColor3 = Color3.fromRGB(30,30,36)
+rainbowBtn.Text = "Rainbow: OFF"
+rainbowBtn.TextColor3 = Color3.fromRGB(255,255,255)
+rainbowBtn.TextSize = 18
+rainbowBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", rainbowBtn).CornerRadius = UDim.new(0, 10)
+
+local userBtn = Instance.new("TextButton", frame)
+userBtn.Size = UDim2.new(0.4,0,0,38)
+userBtn.Position = UDim2.new(0.05,0,0,104)
+userBtn.BackgroundColor3 = Color3.fromRGB(30,30,36)
+userBtn.Text = "Username: OFF"
+userBtn.TextColor3 = Color3.fromRGB(255,255,255)
+userBtn.TextSize = 18
+userBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", userBtn).CornerRadius = UDim.new(0, 10)
+
+local dispBtn = Instance.new("TextButton", frame)
+dispBtn.Size = UDim2.new(0.4,0,0,38)
+dispBtn.Position = UDim2.new(0.55,0,0,104)
+dispBtn.BackgroundColor3 = Color3.fromRGB(30,30,36)
+dispBtn.Text = "DisplayName: OFF"
+dispBtn.TextColor3 = Color3.fromRGB(255,255,255)
+dispBtn.TextSize = 18
+dispBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", dispBtn).CornerRadius = UDim.new(0, 10)
+
+local bothBtn = Instance.new("TextButton", frame)
+bothBtn.Size = UDim2.new(0.4,0,0,38)
+bothBtn.Position = UDim2.new(0.05,0,0,154)
+bothBtn.BackgroundColor3 = Color3.fromRGB(30,30,36)
+bothBtn.Text = "Both: OFF"
+bothBtn.TextColor3 = Color3.fromRGB(255,255,255)
+bothBtn.TextSize = 18
+bothBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", bothBtn).CornerRadius = UDim.new(0, 10)
+
+local colorLabel = Instance.new("TextLabel", frame)
+colorLabel.Size = UDim2.new(1, -20, 0, 24)
+colorLabel.Position = UDim2.new(0, 10, 0, 210)
+colorLabel.BackgroundTransparency = 1
+colorLabel.Text = "ESP Color"
+colorLabel.TextColor3 = Color3.fromRGB(0,255,255)
+colorLabel.TextSize = 18
+colorLabel.Font = Enum.Font.Gotham
+
+local colorWheel = Instance.new("ImageButton", frame)
+colorWheel.Size = UDim2.new(0, 260, 0, 260)
+colorWheel.Position = UDim2.new(0.5, -130, 0, 240)
+colorWheel.BackgroundTransparency = 1
+colorWheel.Image = "rbxassetid://6020299385"
+
+local colorPreview = Instance.new("Frame", frame)
+colorPreview.Size = UDim2.new(0,60,0,60)
+colorPreview.Position = UDim2.new(0.5,-30,0,510)
+colorPreview.BackgroundColor3 = Color3.fromRGB(0,255,255)
+colorPreview.BorderSizePixel = 0
+Instance.new("UICorner", colorPreview).CornerRadius = UDim.new(1,0)
+
+local espEnabled = false
+local userEnabled = false
+local dispEnabled = false
+local bothEnabled = false
+local rainbowEnabled = false
+local espObjects = {}
+local nameTags = {}
+
+local color = Color3.fromRGB(0,255,255)
+local draggingWheel = false
+local h,s = 0.5,1
+
+local function GetColorFromWheelPosition(inputPosition)
+    local wheelCenter = colorWheel.AbsolutePosition + colorWheel.AbsoluteSize/2
+    local wheelRadius = colorWheel.AbsoluteSize.X/2
+    local positionOffset = inputPosition - wheelCenter
+    local distanceFromCenter = positionOffset.Magnitude
+    local normalizedDistance = math.clamp(distanceFromCenter / wheelRadius, 0, 1)
+    local angle = math.atan2(positionOffset.Y, -positionOffset.X)
+    if angle < 0 then angle = angle + (math.pi * 2) end
+    local hue = angle / (math.pi * 2)
+    return hue, normalizedDistance
+end
+
+local function updateESPColors()
+    for _, highlight in pairs(espObjects) do
+        if highlight and highlight.Parent then
+            highlight.FillColor = color
+            highlight.OutlineColor = color
+        end
+    end
+    for _, tag in pairs(nameTags) do
+        if tag and tag.Parent then
+            local txt = tag:FindFirstChildOfClass("TextLabel")
+            if txt then txt.TextColor3 = color end
+        end
+    end
+    colorPreview.BackgroundColor3 = color
+end
+
+colorWheel.MouseButton1Down:Connect(function(x, y)
+    draggingWheel = true
+end)
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingWheel = false
+    end
+end)
+UIS.InputChanged:Connect(function(input)
+    if draggingWheel and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local pos = Vector2.new(input.Position.X, input.Position.Y)
+        local hue, sat = GetColorFromWheelPosition(pos)
+        h = hue
+        s = sat
+        color = Color3.fromHSV(h, s, 1)
+        if not rainbowEnabled then updateESPColors() end
+    end
+end)
+
+local function clearESP()
+    for plr,high in pairs(espObjects) do
+        if high and high.Parent then pcall(function() high:Destroy() end) end
+        espObjects[plr] = nil
+    end
+end
+local function clearTags()
+    for plr,tag in pairs(nameTags) do
+        if tag and tag.Parent then pcall(function() tag:Destroy() end) end
+        nameTags[plr] = nil
+    end
+end
+
+local function makeTag(plr,mode)
+    if plr == lp then return end
+    local function onChar(char)
+        local head = char:FindFirstChild("Head")
+        if not head then return end
+        local tag = Instance.new("BillboardGui")
+        tag.Size = UDim2.new(0, 240, 0, 44)
+        tag.StudsOffset = Vector3.new(0,2,0)
+        tag.AlwaysOnTop = true
+        tag.Parent = head
+        tag.Name = "UniversalNameTag"
+        local txt = Instance.new("TextLabel", tag)
+        txt.Size = UDim2.new(1,0,1,0)
+        txt.BackgroundTransparency = 1
+        txt.TextColor3 = color
+        txt.TextStrokeTransparency = 0.5
+        txt.Font = Enum.Font.GothamBold
+        txt.TextSize = 28
+        if mode == "user" then
+            txt.Text = plr.Name
+        elseif mode == "display" then
+            txt.Text = plr.DisplayName
+        elseif mode == "both" then
+            txt.Text = plr.DisplayName.." ["..plr.Name.."]"
+        end
+        nameTags[plr] = tag
+    end
+    if plr.Character then onChar(plr.Character) end
+    plr.CharacterAdded:Connect(function(char)
+        RunService.RenderStepped:Wait()
+        onChar(char)
+    end)
+    plr.CharacterRemoving:Connect(function()
+        if nameTags[plr] then
+            pcall(function() nameTags[plr]:Destroy() end)
+            nameTags[plr] = nil
+        end
+    end)
+end
+
+local function enableESP()
+    clearESP()
+    for _,plr in ipairs(Players:GetPlayers()) do
+        if plr ~= lp and plr.Character then
+            local highlight = Instance.new("Highlight")
+            highlight.FillColor = color
+            highlight.OutlineColor = color
+            highlight.FillTransparency = 0.7
+            highlight.OutlineTransparency = 0.2
+            highlight.Adornee = plr.Character
+            highlight.Parent = plr.Character
+            espObjects[plr] = highlight
+            plr.CharacterRemoving:Connect(function()
+                if espObjects[plr] then
+                    pcall(function() espObjects[plr]:Destroy() end)
+                    espObjects[plr] = nil
+                end
+            end)
+        end
+    end
+end
+
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function(char)
+        if espEnabled and plr ~= lp then
+            local highlight = Instance.new("Highlight")
+            highlight.FillColor = color
+            highlight.OutlineColor = color
+            highlight.FillTransparency = 0.7
+            highlight.OutlineTransparency = 0.2
+            highlight.Adornee = char
+            highlight.Parent = char
+            espObjects[plr] = highlight
+            plr.CharacterRemoving:Connect(function()
+                if espObjects[plr] then
+                    pcall(function() espObjects[plr]:Destroy() end)
+                    espObjects[plr] = nil
+                end
+            end)
+        end
+        if userEnabled then makeTag(plr,"user") end
+        if dispEnabled then makeTag(plr,"display") end
+        if bothEnabled then makeTag(plr,"both") end
+    end)
+end)
+
+local function disableESP()
+    clearESP()
+end
+
+local function enableTags(mode)
+    clearTags()
+    for _,plr in ipairs(Players:GetPlayers()) do
+        makeTag(plr,mode)
+    end
+end
+
+local function disableTags()
+    clearTags()
+end
+
+toggle.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    if espEnabled then
+        toggle.Text = "ESP: ON"
+        enableESP()
+        updateESPColors()
+    else
+        toggle.Text = "ESP: OFF"
+        disableESP()
+    end
+end)
+
+rainbowBtn.MouseButton1Click:Connect(function()
+    rainbowEnabled = not rainbowEnabled
+    rainbowBtn.Text = rainbowEnabled and "Rainbow: ON" or "Rainbow: OFF"
+end)
+
+RunService.RenderStepped:Connect(function()
+    if rainbowEnabled then
+        local t = tick() % 6 / 6
+        color = Color3.fromHSV(t,1,1)
+        updateESPColors()
+    end
+end)
+
+userBtn.MouseButton1Click:Connect(function()
+    userEnabled = not userEnabled
+    dispEnabled = false
+    bothEnabled = false
+    userBtn.Text = userEnabled and "Username: ON" or "Username: OFF"
+    dispBtn.Text = "DisplayName: OFF"
+    bothBtn.Text = "Both: OFF"
+    if userEnabled then
+        enableTags("user")
+        updateESPColors()
+    else
+        disableTags()
+    end
+end)
+
+dispBtn.MouseButton1Click:Connect(function()
+    dispEnabled = not dispEnabled
+    userEnabled = false
+    bothEnabled = false
+    dispBtn.Text = dispEnabled and "DisplayName: ON" or "DisplayName: OFF"
+    userBtn.Text = "Username: OFF"
+    bothBtn.Text = "Both: OFF"
+    if dispEnabled then
+        enableTags("display")
+        updateESPColors()
+    else
+        disableTags()
+    end
+end)
+
+bothBtn.MouseButton1Click:Connect(function()
+    bothEnabled = not bothEnabled
+    userEnabled = false
+    dispEnabled = false
+    bothBtn.Text = bothEnabled and "Both: ON" or "Both: OFF"
+    userBtn.Text = "Username: OFF"
+    dispBtn.Text = "DisplayName: OFF"
+    if bothEnabled then
+        enableTags("both")
+        updateESPColors()
+    else
+        disableTags()
+    end
+end)
