@@ -1,9 +1,3 @@
--- made by hayze :)
-
--- dont steal
-
--- be aware that this script is in beta and something might not work
-
 local pg = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
 if pg then
     for _, n in ipairs({"UniversalFlingGUI"}) do
