@@ -1,0 +1,364 @@
+-- dont steal or i'll be under ur bed
+
+-- im too lazy to obfuscate this so ye
+
+local pg = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+if pg then
+    for _, n in ipairs({"UniversalUtilGUI","UniversalUtilToggleBtn","HxyzeIntro"}) do
+        local g = pg:FindFirstChild(n)
+        if g then pcall(function() g:Destroy() end) end
+    end
+end
+
+local UIS = game:GetService("UserInputService")
+local TS = game:GetService("TweenService")
+local Player = game.Players.LocalPlayer
+
+local guiOpen = false
+local guiLocked = false
+local gui, frame, toggleBtn
+
+local function rgb(r,g,b) return Color3.fromRGB(r,g,b) end
+
+local function playIntroAndMorphToGUI(mainGui, mainFrame)
+    local introGui = Instance.new("ScreenGui")
+    introGui.Name = "HxyzeIntro"
+    introGui.Parent = Player:WaitForChild("PlayerGui")
+    introGui.IgnoreGuiInset = true
+    introGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    introGui.DisplayOrder = 1000
+
+    local sphere = Instance.new("Frame")
+    sphere.Size = UDim2.new(0,0,0,0)
+    sphere.Position = UDim2.new(0.5,0,0.5,0)
+    sphere.AnchorPoint = Vector2.new(0.5,0.5)
+    sphere.BackgroundColor3 = rgb(18,19,24)
+    sphere.BackgroundTransparency = 0
+    sphere.Parent = introGui
+    sphere.ZIndex = 10
+
+    local glass = Instance.new("ImageLabel", sphere)
+    glass.BackgroundTransparency = 1
+    glass.Size = UDim2.new(1,0,1,0)
+    glass.Image = "rbxassetid://7733715928"
+    glass.ImageTransparency = 0.4
+    glass.ZIndex = 11
+
+    local glow = Instance.new("ImageLabel", sphere)
+    glow.BackgroundTransparency = 1
+    glow.Size = UDim2.new(2,0,2,0)
+    glow.Position = UDim2.new(-0.5,0,-0.5,0)
+    glow.Image = "rbxassetid://5028857084"
+    glow.ImageColor3 = rgb(0,255,255)
+    glow.ImageTransparency = 0.7
+    glow.ZIndex = 9
+
+    local corner = Instance.new("UICorner", sphere)
+    corner.CornerRadius = UDim.new(1,0)
+
+    local shadow = Instance.new("ImageLabel", sphere)
+    shadow.BackgroundTransparency = 1
+    shadow.Size = UDim2.new(1.5,0,1.5,0)
+    shadow.Position = UDim2.new(-0.25,0,-0.25,0)
+    shadow.Image = "rbxassetid://1316045217"
+    shadow.ImageTransparency = 0.7
+    shadow.ZIndex = 8
+
+    local label = Instance.new("TextLabel", sphere)
+    label.Size = UDim2.new(1,0,1,0)
+    label.Position = UDim2.new(0,0,0,0)
+    label.BackgroundTransparency = 1
+    label.Text = "Hxyze Productions"
+    label.TextColor3 = rgb(255,255,255)
+    label.TextStrokeTransparency = 0.5
+    label.TextStrokeColor3 = rgb(0,255,255)
+    label.TextSize = 0
+    label.Font = Enum.Font.GothamBlack
+    label.ZIndex = 12
+
+    TS:Create(sphere, TweenInfo.new(1.2, Enum.EasingStyle.Quint), {Size = UDim2.new(0,340,0,340)}):Play()
+    TS:Create(glow, TweenInfo.new(1.2), {ImageTransparency = 0.3}):Play()
+    task.wait(0.6)
+    TS:Create(label, TweenInfo.new(0.8), {TextSize = 44}):Play()
+    task.wait(1.1)
+    TS:Create(label, TweenInfo.new(0.5), {TextTransparency = 1, TextStrokeTransparency = 1}):Play()
+    TS:Create(corner, TweenInfo.new(0.5), {CornerRadius = UDim.new(0, 18)}):Play()
+    TS:Create(sphere, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {
+        Size = mainFrame.Size,
+        Position = mainFrame.Position,
+        BackgroundColor3 = rgb(18,19,24)
+    }):Play()
+    TS:Create(glow, TweenInfo.new(0.7), {ImageTransparency = 0.8, Size = UDim2.new(3,0,3,0)}):Play()
+    TS:Create(glass, TweenInfo.new(0.7), {ImageTransparency = 0.7}):Play()
+    TS:Create(shadow, TweenInfo.new(0.7), {ImageTransparency = 1}):Play()
+    task.wait(0.7)
+    mainGui.Enabled = true
+    guiOpen = true
+    introGui:Destroy()
+end
+
+local function createToggleBtn()
+    if not UIS.TouchEnabled then return end
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "UniversalUtilToggleBtn"
+    gui.Parent = Player.PlayerGui
+    gui.IgnoreGuiInset = true
+    gui.DisplayOrder = 1002
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local btn = Instance.new("ImageButton")
+    btn.Name = "ToggleButton"
+    btn.AnchorPoint = Vector2.new(0,1)
+    btn.Position = UDim2.new(0, 18, 1, -18)
+    btn.Size = UDim2.new(0, 56, 0, 56)
+    btn.BackgroundColor3 = rgb(28,28,34)
+    btn.BackgroundTransparency = 0.1
+    btn.Image = ""
+    btn.Parent = gui
+
+    local corner = Instance.new("UICorner", btn)
+    corner.CornerRadius = UDim.new(1,0)
+    local stroke = Instance.new("UIStroke", btn)
+    stroke.Color = rgb(0,255,255)
+    stroke.Thickness = 2
+    stroke.Transparency = 0.15
+
+    local icon = Instance.new("ImageLabel", btn)
+    icon.Size = UDim2.new(0.7,0,0.7,0)
+    icon.Position = UDim2.new(0.15,0,0.15,0)
+    icon.BackgroundTransparency = 1
+    icon.Image = "rbxassetid://138561190841526"
+    icon.ZIndex = 101
+    local iconCorner = Instance.new("UICorner", icon)
+    iconCorner.CornerRadius = UDim.new(1,0)
+
+    return btn
+end
+
+local function createGUI()
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "UniversalUtilGUI"
+    gui.ResetOnSpawn = false
+    gui.Enabled = true
+    gui.Parent = Player.PlayerGui
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.DisplayOrder = 1001
+
+    local frame = Instance.new("Frame")
+    frame.AnchorPoint = Vector2.new(0.5,0.5)
+    frame.Position = UDim2.new(0.5,0,0.5,0)
+    frame.Size = UDim2.new(0.35,0,0.42,0)
+    frame.BackgroundColor3 = rgb(18,19,24)
+    frame.Parent = gui
+    local frameCorner = Instance.new("UICorner", frame)
+    frameCorner.CornerRadius = UDim.new(0, 18)
+    local frameStroke = Instance.new("UIStroke", frame)
+    frameStroke.Color = rgb(0,255,255)
+    frameStroke.Thickness = 2
+    frameStroke.Transparency = 0.12
+    local frameShadow = Instance.new("ImageLabel", frame)
+    frameShadow.BackgroundTransparency = 1
+    frameShadow.Size = UDim2.new(1.2,0,1.2,0)
+    frameShadow.Position = UDim2.new(-0.1,0,-0.1,0)
+    frameShadow.Image = "rbxassetid://1316045217"
+    frameShadow.ImageTransparency = 0.8
+    frameShadow.ZIndex = 8
+
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1,0,0,54)
+    title.Position = UDim2.new(0,0,0,0)
+    title.BackgroundTransparency = 1
+    title.Text = "🌐 Universal Cframe Utility"
+    title.TextColor3 = rgb(0,255,255)
+    title.TextStrokeTransparency = 0.8
+    title.TextSize = 26
+    title.Font = Enum.Font.DenkOne
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.ZIndex = 16
+
+    local close = Instance.new("TextButton", frame)
+    close.Size = UDim2.new(0,44,0,44)
+    close.Position = UDim2.new(1,-54,0,5)
+    close.BackgroundColor3 = rgb(30,30,36)
+    close.Text = "×"
+    close.TextColor3 = rgb(0,255,255)
+    close.TextSize = 30
+    close.Font = Enum.Font.GothamBlack
+    close.ZIndex = 17
+    local closeCorner = Instance.new("UICorner", close)
+    closeCorner.CornerRadius = UDim.new(0, 12)
+    local closeGlow = Instance.new("UIStroke", close)
+    closeGlow.Color = rgb(0,255,255)
+    closeGlow.Thickness = 2
+    closeGlow.Transparency = 0.3
+    close.MouseEnter:Connect(function()
+        TS:Create(close, TweenInfo.new(0.16), {BackgroundColor3 = rgb(0,40,40)}):Play()
+        TS:Create(closeGlow, TweenInfo.new(0.16), {Transparency = 0}):Play()
+    end)
+    close.MouseLeave:Connect(function()
+        TS:Create(close, TweenInfo.new(0.16), {BackgroundColor3 = rgb(30,30,36)}):Play()
+        TS:Create(closeGlow, TweenInfo.new(0.16), {Transparency = 0.3}):Play()
+    end)
+    close.MouseButton1Click:Connect(function()
+        gui.Enabled = false
+        guiOpen = false
+        guiLocked = true
+    end)
+
+    local posLabel = Instance.new("TextLabel", frame)
+    posLabel.Size = UDim2.new(1,-40,0,60)
+    posLabel.Position = UDim2.new(0,20,0,70)
+    posLabel.BackgroundTransparency = 1
+    posLabel.TextColor3 = rgb(0,255,255)
+    posLabel.TextStrokeTransparency = 0.7
+    posLabel.TextSize = 18
+    posLabel.Font = Enum.Font.Gotham
+    posLabel.Text = "Position: Loading..."
+    posLabel.TextWrapped = true
+
+    local copyBtn = Instance.new("TextButton", frame)
+    copyBtn.Size = UDim2.new(0.45,-10,0,38)
+    copyBtn.Position = UDim2.new(0.05,0,0,140)
+    copyBtn.BackgroundColor3 = rgb(24,24,28)
+    copyBtn.TextColor3 = rgb(255,255,255)
+    copyBtn.Text = "Copy CFrame"
+    copyBtn.TextSize = 16
+    copyBtn.Font = Enum.Font.GothamBold
+    Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 10)
+    local copyGlow = Instance.new("UIStroke", copyBtn)
+    copyGlow.Color = rgb(0,255,255)
+    copyGlow.Thickness = 2
+    copyGlow.Transparency = 0.5
+
+    local teleportBtn = Instance.new("TextButton", frame)
+    teleportBtn.Size = UDim2.new(0.45,-10,0,38)
+    teleportBtn.Position = UDim2.new(0.5,10,0,140)
+    teleportBtn.BackgroundColor3 = rgb(24,24,28)
+    teleportBtn.TextColor3 = rgb(255,255,255)
+    teleportBtn.Text = "Teleport"
+    teleportBtn.TextSize = 16
+    teleportBtn.Font = Enum.Font.GothamBold
+    Instance.new("UICorner", teleportBtn).CornerRadius = UDim.new(0, 10)
+    local teleportGlow = Instance.new("UIStroke", teleportBtn)
+    teleportGlow.Color = rgb(0,255,255)
+    teleportGlow.Thickness = 2
+    teleportGlow.Transparency = 0.5
+
+    local inputBox = Instance.new("TextBox", frame)
+    inputBox.Size = UDim2.new(1,-40,0,38)
+    inputBox.Position = UDim2.new(0,20,0,200)
+    inputBox.BackgroundColor3 = rgb(24,24,28)
+    inputBox.TextColor3 = rgb(255,255,255)
+    inputBox.PlaceholderText = "Paste CFrame or Vector3 (x, y, z)"
+    inputBox.TextSize = 16
+    inputBox.Font = Enum.Font.Gotham
+    Instance.new("UICorner", inputBox).CornerRadius = UDim.new(0, 10)
+    local inputGlow = Instance.new("UIStroke", inputBox)
+    inputGlow.Color = rgb(0,255,255)
+    inputGlow.Thickness = 2
+    inputGlow.Transparency = 0.5
+
+    local msgLabel = Instance.new("TextLabel", frame)
+    msgLabel.Size = UDim2.new(1,-40,0,32)
+    msgLabel.Position = UDim2.new(0,20,0,250)
+    msgLabel.BackgroundTransparency = 1
+    msgLabel.TextColor3 = rgb(0,255,255)
+    msgLabel.TextSize = 15
+    msgLabel.Font = Enum.Font.Gotham
+    msgLabel.Text = ""
+    msgLabel.TextWrapped = true
+
+    local function updatePos()
+        local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local cf = hrp.CFrame
+            posLabel.Text = "Position:\nCFrame: "..tostring(cf).."\nVector3: "..tostring(hrp.Position)
+        else
+            posLabel.Text = "Position: Not found"
+        end
+    end
+
+    spawn(function()
+        while gui and gui.Parent do
+            pcall(updatePos)
+            wait(0.2)
+        end
+    end)
+
+    copyBtn.MouseButton1Click:Connect(function()
+        local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            setclipboard(tostring(hrp.CFrame))
+            msgLabel.Text = "Copied CFrame to clipboard!"
+        else
+            msgLabel.Text = "Character not found."
+        end
+    end)
+
+    teleportBtn.MouseButton1Click:Connect(function()
+        local val = inputBox.Text
+        local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local success = pcall(function()
+                if val:find("CFrame") then
+                    local cf = loadstring("return "..val)()
+                    hrp.CFrame = cf
+                elseif val:find(",") then
+                    local x,y,z = val:match("([%d%-%.]+)[,%s]+([%d%-%.]+)[,%s]+([%d%-%.]+)")
+                    if x and y and z then
+                        hrp.CFrame = CFrame.new(tonumber(x),tonumber(y),tonumber(z))
+                    else
+                        error("Invalid Vector3")
+                    end
+                else
+                    error("Invalid input")
+                end
+            end)
+            msgLabel.Text = success and "Teleported!" or "Invalid input."
+        else
+            msgLabel.Text = "Character not found."
+        end
+    end)
+
+    return gui, frame
+end
+
+toggleBtn = createToggleBtn()
+
+if toggleBtn then
+    toggleBtn.MouseButton1Click:Connect(function()
+        if guiLocked then return end
+        if guiOpen then
+            gui.Enabled = false
+            guiOpen = false
+        else
+            gui.Enabled = true
+            guiOpen = true
+        end
+    end)
+end
+
+gui, frame = createGUI()
+guiOpen = true
+
+Player.CharacterAdded:Connect(function()
+    wait(1)
+    if not Player.PlayerGui:FindFirstChild("UniversalUtilGUI") then
+        gui.Parent = Player.PlayerGui
+    end
+    if UIS.TouchEnabled and (not toggleBtn or not toggleBtn.Parent) then
+        toggleBtn = createToggleBtn()
+        if toggleBtn then
+            toggleBtn.MouseButton1Click:Connect(function()
+                if guiLocked then return end
+                if guiOpen then
+                    gui.Enabled = false
+                    guiOpen = false
+                else
+                    gui.Enabled = true
+                    guiOpen = true
+                end
+            end)
+        end
+    end
+end)
