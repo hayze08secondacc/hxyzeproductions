@@ -1,0 +1,352 @@
+-- made by hayze :)
+
+-- dont steal
+
+-- be aware that this script is in beta and something might not work
+
+local pg = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerGui")
+if pg then
+    for _, n in ipairs({"UniversalFlingGUI"}) do
+        local g = pg:FindFirstChild(n)
+        if g then pcall(function() g:Destroy() end) end
+    end
+end
+
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+local RS = game:GetService("RunService")
+local TS = game:GetService("TweenService")
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "UniversalFlingGUI"
+gui.Parent = lp.PlayerGui
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 480, 0, 290)
+frame.Position = UDim2.new(0.5, -240, 0.15, 0)
+frame.BackgroundColor3 = Color3.fromRGB(16,19,28)
+frame.BackgroundTransparency = 1
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 18)
+local shadow = Instance.new("ImageLabel", frame)
+shadow.BackgroundTransparency = 1
+shadow.Size = UDim2.new(1.2,0,1.2,0)
+shadow.Position = UDim2.new(-0.1,0,-0.1,0)
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageTransparency = 0.85
+shadow.ZIndex = 0
+
+frame.Visible = false
+TS:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.08}):Play()
+frame.Visible = true
+
+local titleBar = Instance.new("Frame", frame)
+titleBar.Size = UDim2.new(1,0,0,44)
+titleBar.BackgroundColor3 = Color3.fromRGB(22,25,38)
+titleBar.BorderSizePixel = 0
+titleBar.Position = UDim2.new(0,0,0,0)
+titleBar.ZIndex = 10
+Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 18)
+
+local glowBar = Instance.new("ImageLabel", titleBar)
+glowBar.Size = UDim2.new(1,0,1,0)
+glowBar.Position = UDim2.new(0,0,0,0)
+glowBar.BackgroundTransparency = 1
+glowBar.Image = "rbxassetid://5028857084"
+glowBar.ImageColor3 = Color3.fromRGB(0,120,255)
+glowBar.ImageTransparency = 0.87
+glowBar.ZIndex = 1
+
+local label = Instance.new("TextLabel", titleBar)
+label.Size = UDim2.new(1, -64, 1, 0)
+label.Position = UDim2.new(0, 18, 0, 0)
+label.BackgroundTransparency = 1
+label.Text = "fling by hxyze productions [BETA]"
+label.Font = Enum.Font.GothamBold
+label.TextSize = 22
+label.TextColor3 = Color3.fromRGB(0,120,255)
+label.TextStrokeTransparency = 0.8
+label.TextStrokeColor3 = Color3.fromRGB(0,120,255)
+label.TextXAlignment = Enum.TextXAlignment.Left
+label.ZIndex = 10
+
+local closeBtn = Instance.new("TextButton", titleBar)
+closeBtn.Size = UDim2.new(0,36,0,36)
+closeBtn.Position = UDim2.new(1,-42,0,4)
+closeBtn.BackgroundColor3 = Color3.fromRGB(30,30,36)
+closeBtn.Text = "×"
+closeBtn.TextColor3 = Color3.fromRGB(255,80,80)
+closeBtn.TextSize = 28
+closeBtn.Font = Enum.Font.GothamBlack
+closeBtn.ZIndex = 11
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(1,0)
+local closeGlow = Instance.new("UIStroke", closeBtn)
+closeGlow.Color = Color3.fromRGB(255,80,80)
+closeGlow.Thickness = 2
+closeGlow.Transparency = 0.3
+closeBtn.MouseEnter:Connect(function()
+    TS:Create(closeBtn, TweenInfo.new(0.17), {BackgroundColor3 = Color3.fromRGB(60,0,0)}):Play()
+    TS:Create(closeGlow, TweenInfo.new(0.17), {Transparency = 0}):Play()
+end)
+closeBtn.MouseLeave:Connect(function()
+    TS:Create(closeBtn, TweenInfo.new(0.17), {BackgroundColor3 = Color3.fromRGB(30,30,36)}):Play()
+    TS:Create(closeGlow, TweenInfo.new(0.17), {Transparency = 0.3}):Play()
+end)
+closeBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
+
+local infoLabel = Instance.new("TextLabel", frame)
+infoLabel.Size = UDim2.new(1, -32, 0, 24)
+infoLabel.Position = UDim2.new(0, 18, 0, 54)
+infoLabel.BackgroundTransparency = 1
+infoLabel.Text = "Choose a player and press FLING! (You will noclip, spin, and move with them)"
+infoLabel.TextColor3 = Color3.fromRGB(0,120,255)
+infoLabel.Font = Enum.Font.Gotham
+infoLabel.TextSize = 13
+infoLabel.TextWrapped = true
+infoLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local dropLabel = Instance.new("TextLabel", frame)
+dropLabel.Size = UDim2.new(0, 90, 0, 22)
+dropLabel.Position = UDim2.new(0, 22, 0, 90)
+dropLabel.BackgroundTransparency = 1
+dropLabel.Text = "Target"
+dropLabel.TextColor3 = Color3.fromRGB(0,120,255)
+dropLabel.Font = Enum.Font.Gotham
+dropLabel.TextSize = 15
+
+local targetBox = Instance.new("TextBox", frame)
+targetBox.Size = UDim2.new(0, 180, 0, 26)
+targetBox.Position = UDim2.new(0, 90, 0, 88)
+targetBox.PlaceholderText = "Username or DisplayName"
+targetBox.Font = Enum.Font.Gotham
+targetBox.TextSize = 15
+targetBox.TextColor3 = Color3.fromRGB(0,120,255)
+targetBox.BackgroundColor3 = Color3.fromRGB(230,240,255)
+Instance.new("UICorner", targetBox).CornerRadius = UDim.new(0, 8)
+
+local lockToggle = Instance.new("TextButton", frame)
+lockToggle.Size = UDim2.new(0, 170, 0, 30)
+lockToggle.Position = UDim2.new(1, -188, 0, 88)
+lockToggle.BackgroundColor3 = Color3.fromRGB(230,240,255)
+lockToggle.Text = "Lock Until Stable: OFF"
+lockToggle.TextColor3 = Color3.fromRGB(0,120,255)
+lockToggle.TextSize = 15
+lockToggle.Font = Enum.Font.GothamBold
+Instance.new("UICorner", lockToggle).CornerRadius = UDim.new(0, 8)
+
+local forceStopBtn = Instance.new("TextButton", frame)
+forceStopBtn.Size = UDim2.new(0, 170, 0, 30)
+forceStopBtn.Position = UDim2.new(1, -188, 0, 128)
+forceStopBtn.BackgroundColor3 = Color3.fromRGB(0,120,255)
+forceStopBtn.Text = "Force Stop Lock"
+forceStopBtn.TextColor3 = Color3.fromRGB(255,255,255)
+forceStopBtn.TextSize = 15
+forceStopBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", forceStopBtn).CornerRadius = UDim.new(0, 8)
+
+local lockEnabled = false
+lockToggle.MouseButton1Click:Connect(function()
+    lockEnabled = not lockEnabled
+    lockToggle.Text = lockEnabled and "Lock Until Stable: ON" or "Lock Until Stable: OFF"
+    lockToggle.TextColor3 = lockEnabled and Color3.fromRGB(0,180,255) or Color3.fromRGB(0,120,255)
+end)
+
+local spinning = false
+local con = nil
+local originalPos = nil
+local lockCon = nil
+
+local function findPlayerByShortName(str)
+    str = str:lower()
+    for _,plr in ipairs(Players:GetPlayers()) do
+        if plr == lp then continue end
+        if plr.Name:lower():sub(1,#str) == str or plr.DisplayName:lower():sub(1,#str) == str then
+            return plr
+        end
+    end
+    return nil
+end
+
+local function getRoot(char)
+    return char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso"))
+end
+
+local function setNoclip(state)
+    local myChar = lp.Character
+    if myChar then
+        for _,v in ipairs(myChar:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = not state
+            end
+        end
+    end
+end
+
+local function isStable(root)
+    if not root then return false end
+    local vel = root.Velocity.Magnitude
+    local rot = root.RotVelocity.Magnitude
+    return vel < 2 and rot < 2
+end
+
+local function stopLocking()
+    if lockCon then
+        lockCon:Disconnect()
+        lockCon = nil
+    end
+    setNoclip(false)
+    infoLabel.Text = "Lock forcibly stopped."
+end
+
+forceStopBtn.MouseButton1Click:Connect(stopLocking)
+
+local function lockToOriginalPosition()
+    local myChar = lp.Character
+    local myRoot = getRoot(myChar)
+    if not myRoot or not originalPos then return end
+    infoLabel.Text = "Locking until stable..."
+    local bp = Instance.new("BodyPosition")
+    bp.MaxForce = Vector3.new(1e9,1e9,1e9)
+    bp.P = 1e5
+    bp.D = 1000
+    bp.Position = originalPos.Position
+    bp.Parent = myRoot
+    local bg = Instance.new("BodyGyro")
+    bg.MaxTorque = Vector3.new(1e9,1e9,1e9)
+    bg.P = 1e5
+    bg.D = 1000
+    bg.CFrame = originalPos
+    bg.Parent = myRoot
+    setNoclip(true)
+    local stableTicks = 0
+    lockCon = RS.Heartbeat:Connect(function()
+        myRoot.CFrame = originalPos
+        bp.Position = originalPos.Position
+        bg.CFrame = originalPos
+        setNoclip(true)
+        if isStable(myRoot) then
+            stableTicks = stableTicks + 1
+        else
+            stableTicks = 0
+        end
+        if stableTicks > 16 then
+            bp:Destroy()
+            bg:Destroy()
+            setNoclip(false)
+            if lockCon then lockCon:Disconnect() end
+            infoLabel.Text = "Choose a player and press FLING! (You will noclip, spin, and move with them)"
+        end
+    end)
+end
+
+local function startFling(target)
+    if spinning then return end
+    local myChar = lp.Character
+    local targetChar = target and target.Character
+    local myRoot = getRoot(myChar)
+    local targetRoot = getRoot(targetChar)
+    if not (myChar and myRoot and targetChar and targetRoot) then
+        infoLabel.Text = "Target or you not found."
+        return
+    end
+    spinning = true
+    originalPos = myRoot.CFrame
+    setNoclip(true)
+    infoLabel.Text = "Flinging "..target.DisplayName.." ["..target.Name.."]"
+    local bp = Instance.new("BodyPosition")
+    bp.MaxForce = Vector3.new(1e9,1e9,1e9)
+    bp.P = 1e5
+    bp.D = 1000
+    bp.Parent = myRoot
+
+    local bg = Instance.new("BodyGyro")
+    bg.MaxTorque = Vector3.new(1e9,1e9,1e9)
+    bg.P = 1e5
+    bg.D = 1000
+    bg.Parent = myRoot
+
+    local spin = 0
+    con = RS.Heartbeat:Connect(function()
+        if not spinning or not targetChar or not targetChar.Parent or not targetRoot or not myRoot or not myRoot.Parent then
+            bp:Destroy()
+            bg:Destroy()
+            setNoclip(false)
+            if con then con:Disconnect() end
+            spinning = false
+            infoLabel.Text = "Choose a player and press FLING! (You will noclip, spin, and move with them)"
+            return
+        end
+        myChar:MoveTo(targetRoot.Position)
+        bp.Position = targetRoot.Position + Vector3.new(0,1.5,0)
+        spin = spin + 1.5
+        bg.CFrame = CFrame.new(myRoot.Position, targetRoot.Position) * CFrame.Angles(spin*15,spin*30,spin*45)
+        setNoclip(true)
+        if targetRoot.Position.Y < -100 then
+            bp:Destroy()
+            bg:Destroy()
+            setNoclip(false)
+            if con then con:Disconnect() end
+            spinning = false
+            infoLabel.Text = "Target flung to void!"
+        end
+    end)
+end
+
+local function stopFling()
+    spinning = false
+    if con then con:Disconnect() end
+    con = nil
+    setNoclip(false)
+    local myChar = lp.Character
+    local myRoot = getRoot(myChar)
+    if myRoot then
+        for _,v in ipairs(myRoot:GetChildren()) do
+            if v:IsA("BodyPosition") or v:IsA("BodyGyro") then v:Destroy() end
+        end
+        if originalPos then
+            myRoot.CFrame = originalPos
+            if lockEnabled then
+                lockToOriginalPosition()
+            else
+                infoLabel.Text = "Choose a player and press FLING! (You will noclip, spin, and move with them)"
+            end
+        end
+    end
+end
+
+local flingBtn = Instance.new("TextButton", frame)
+flingBtn.Size = UDim2.new(0.5, -16, 0, 36)
+flingBtn.Position = UDim2.new(0.05,0,0,180)
+flingBtn.BackgroundColor3 = Color3.fromRGB(0,120,255) -- BLUE BUTTON
+flingBtn.Text = "FLING!"
+flingBtn.TextColor3 = Color3.fromRGB(255,255,255)
+flingBtn.TextSize = 20
+flingBtn.Font = Enum.Font.GothamBlack
+flingBtn.AutoButtonColor = true
+Instance.new("UICorner", flingBtn).CornerRadius = UDim.new(0, 10)
+
+local stopBtn = Instance.new("TextButton", frame)
+stopBtn.Size = UDim2.new(0.4, 0, 0, 36)
+stopBtn.Position = UDim2.new(0.55, 8, 0, 180)
+stopBtn.BackgroundColor3 = Color3.fromRGB(230,240,255)
+stopBtn.Text = "STOP"
+stopBtn.TextColor3 = Color3.fromRGB(0,120,255)
+stopBtn.TextSize = 18
+stopBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", stopBtn).CornerRadius = UDim.new(0, 10)
+
+flingBtn.MouseButton1Click:Connect(function()
+    if spinning then return end
+    local target = findPlayerByShortName(targetBox.Text)
+    if target then
+        startFling(target)
+    else
+        infoLabel.Text = "Player not found."
+    end
+end)
+
+stopBtn.MouseButton1Click:Connect(stopFling)
+closeBtn.MouseButton1Click:Connect(function() gui:Destroy() end)
