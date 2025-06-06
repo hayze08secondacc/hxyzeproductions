@@ -9,7 +9,7 @@ local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
 local FOV_DEFAULT = 70
-local FOV_BOOST = 110
+local FOV_BOOST = 180
 
 local Settings = {
 	FOVEnabled = true,
