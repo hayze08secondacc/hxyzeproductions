@@ -1,0 +1,238 @@
+--scripted this in notepad, dont not steal pls
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+local camera = Workspace.CurrentCamera
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+
+local FOV_DEFAULT = 70
+local FOV_BOOST = 110
+
+local Settings = {
+	FOVEnabled = true,
+	AimLineEnabled = true,
+	TrajectoryEnabled = true,
+	CameraStabilize = true,
+	AimSensitivityBoost = false
+}
+
+camera.FieldOfView = FOV_BOOST
+
+local aimLine = Instance.new("Beam")
+aimLine.Name = "AimAssistBeam"
+aimLine.Width0 = 0.1
+aimLine.Width1 = 0.1
+aimLine.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255))
+aimLine.FaceCamera = true
+aimLine.LightEmission = 1
+aimLine.Transparency = NumberSequence.new(0.3)
+
+local att0 = Instance.new("Attachment", workspace.Terrain)
+local att1 = Instance.new("Attachment", workspace.Terrain)
+aimLine.Attachment0 = att0
+aimLine.Attachment1 = att1
+aimLine.Parent = workspace.Terrain
+
+local trajectoryPoints = {}
+local trajectoryAttachments = {}
+local maxTrajectoryPoints = 15
+for i=1,maxTrajectoryPoints do
+	local a = Instance.new("Attachment", workspace.Terrain)
+	trajectoryAttachments[i] = a
+	local b = Instance.new("Beam")
+	b.Name = "TrajectoryBeam"..i
+	b.Width0 = 0.05
+	b.Width1 = 0.05
+	b.Color = ColorSequence.new(Color3.fromRGB(0, 255, 0))
+	b.FaceCamera = true
+	b.LightEmission = 0.7
+	b.Transparency = NumberSequence.new(0.4)
+	b.Attachment0 = a
+	if i > 1 then
+		b.Attachment1 = trajectoryAttachments[i-1]
+	else
+		b.Attachment1 = a
+	end
+	b.Parent = workspace.Terrain
+	trajectoryPoints[i] = b
+end
+
+local function updateAimLine()
+	if not Settings.AimLineEnabled then aimLine.Enabled = false return end
+	aimLine.Enabled = true
+	local startPos = hrp.Position + Vector3.new(0,2.5,0)
+	local lookVec = hrp.CFrame.LookVector
+	att0.WorldPosition = startPos
+	att1.WorldPosition = startPos + lookVec * 50
+end
+
+local function updateTrajectory()
+	if not Settings.TrajectoryEnabled then
+		for _, b in ipairs(trajectoryPoints) do b.Enabled = false end
+		return
+	end
+	local start = hrp.Position + Vector3.new(0, 2.5, 0)
+	local velocity = hrp.CFrame.LookVector * 70
+	local gravity = Vector3.new(0, Workspace.Gravity, 0)
+	local timeStep = 0.1
+	for i = 1, maxTrajectoryPoints do
+		local t = i * timeStep
+		local pos = start + velocity * t + 0.5 * gravity * t * t
+		trajectoryAttachments[i].WorldPosition = pos
+		trajectoryPoints[i].Enabled = true
+	end
+end
+
+local lastCamPos = camera.CFrame.Position
+local function stabilizeCamera()
+	if not Settings.CameraStabilize then return end
+	local currentPos = camera.CFrame.Position
+	local delta = (currentPos - lastCamPos) * 0.12
+	camera.CFrame = camera.CFrame - delta
+	lastCamPos = camera.CFrame.Position
+end
+
+local function adjustMouseSensitivity()
+	if Settings.AimSensitivityBoost then
+		UserInputService.MouseDeltaSensitivity = 0.4
+	else
+		UserInputService.MouseDeltaSensitivity = 1
+	end
+end
+
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	local key = input.KeyCode
+	if key == Enum.KeyCode.Z then
+		Settings.AimLineEnabled = not Settings.AimLineEnabled
+	elseif key == Enum.KeyCode.X then
+		Settings.TrajectoryEnabled = not Settings.TrajectoryEnabled
+	elseif key == Enum.KeyCode.C then
+		Settings.CameraStabilize = not Settings.CameraStabilize
+	elseif key == Enum.KeyCode.V then
+		Settings.FOVEnabled = not Settings.FOVEnabled
+		camera.FieldOfView = Settings.FOVEnabled and FOV_BOOST or FOV_DEFAULT
+	elseif key == Enum.KeyCode.B then
+		Settings.AimSensitivityBoost = not Settings.AimSensitivityBoost
+		adjustMouseSensitivity()
+	end
+end)
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "FlingImprover"
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 2147483647 -- <<< THIS IS THE CRITICAL LINE
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 350, 0, 260)
+frame.Position = UDim2.new(0.5, -175, 0.5, -130)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.ZIndex = 999999
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+local stroke = Instance.new("UIStroke")
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(255,255,255)
+stroke.Transparency = 0.2
+stroke.Parent = frame
+
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
+}
+gradient.Rotation = 45
+gradient.Parent = stroke
+
+local title = Instance.new("TextLabel")
+title.Text = "FTAP HELPER [HXYZE PRODUCTIONS]"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.ZIndex = 999999
+title.Parent = frame
+
+local function makeToggle(name, settingKey, order)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -20, 0, 36)
+	btn.Position = UDim2.new(0, 10, 0, 45 + (order * 42))
+	btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 18
+	btn.Text = name .. ": ON"
+	btn.ZIndex = 999999
+	btn.Parent = frame
+
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, 8)
+	c.Parent = btn
+
+	local s = Instance.new("UIStroke")
+	s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	s.Thickness = 1
+	s.Color = Color3.fromRGB(255,255,255)
+	s.Transparency = 0.2
+	s.Parent = btn
+
+	local g = gradient:Clone()
+	g.Parent = s
+
+	btn.MouseButton1Click:Connect(function()
+		Settings[settingKey] = not Settings[settingKey]
+		btn.Text = name .. ": " .. (Settings[settingKey] and "ON" or "OFF")
+		if settingKey == "FOVEnabled" then
+			camera.FieldOfView = Settings.FOVEnabled and FOV_BOOST or FOV_DEFAULT
+		elseif settingKey == "AimSensitivityBoost" then
+			adjustMouseSensitivity()
+		end
+	end)
+end
+
+makeToggle("FOV Boost", "FOVEnabled", 0)
+makeToggle("Aim Line", "AimLineEnabled", 1)
+makeToggle("Trajectory", "TrajectoryEnabled", 2)
+makeToggle("Stabilize Cam", "CameraStabilize", 3)
+makeToggle("Slow Sens", "AimSensitivityBoost", 4)
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 28, 0, 28)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+closeBtn.TextColor3 = Color3.new(1,1,1)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 16
+closeBtn.Text = "X"
+closeBtn.ZIndex = 999999
+closeBtn.Parent = frame
+
+local cc = Instance.new("UICorner")
+cc.CornerRadius = UDim.new(1, 0)
+cc.Parent = closeBtn
+
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
+	camera.FieldOfView = FOV_DEFAULT
+	UserInputService.MouseDeltaSensitivity = 1
+end)
+
+RunService.RenderStepped:Connect(function()
+	updateAimLine()
+	updateTrajectory()
+	stabilizeCamera()
+end)
